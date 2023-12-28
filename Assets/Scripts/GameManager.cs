@@ -103,6 +103,9 @@ public class GameManager : MonoBehaviour
             case 90:
                 newDoorZRotation = -90;
                 break;
+            case -270:
+                newDoorZRotation = -90;
+                break;
             case -90:
                 newDoorZRotation = 90;
                 break;
