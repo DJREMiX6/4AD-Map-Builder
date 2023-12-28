@@ -33,6 +33,7 @@
 ExportedObj/
 .consulo/
 *.unityproj
+*.vsconfig
 *.suo
 *.tmp
 *.user
