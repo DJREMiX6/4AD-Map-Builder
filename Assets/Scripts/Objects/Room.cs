@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Assets.Scripts.Objects.Abstraction;
 using Objects.Abstraction;
 using UnityEngine;
@@ -21,6 +22,8 @@ namespace Objects
         public string Id => _id;
 
         public Door[] Doors;
+        public Room ParentRoom;
+        public List<Room> ChildRooms = new();
 
         public Transform Transform => transform;
         public GameObject GameObject => gameObject;
@@ -32,19 +35,20 @@ namespace Objects
 
         public void Clicked(Vector3 position, Vector3 screenPosition)
         {
-            Debug.Log($"Clicked Room {Id}");
+            //TODO
         }
 
         public void ClickedOut()
         {
-            Debug.Log($"Clicked out of Room {Id}");
+            //TODO
         }
 
-        private static int GenerateIdPart() => (int)Random.Range(MIN_ID_VALUE, MAX_ID_VALUE);
+        private static int GenerateIdPart() => Random.Range(MIN_ID_VALUE, MAX_ID_VALUE);
 
         public static string GenerateEntranceId() => GenerateIdPart().ToString();
 
         public static string GenerateRoomId() => string.Concat(GenerateIdPart(), GenerateIdPart());
 
+        public static bool IsValidRoomId(string roomId) => roomId.Length == 2 && char.IsDigit(roomId[0]);
     }
 }

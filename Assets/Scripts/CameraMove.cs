@@ -5,20 +5,19 @@ using UnityEngine.Tilemaps;
 
 public class CameraMove : MonoBehaviour
 {
-    public GameObject mapContainer;
-    public float scale = 0.5f;
+    private const string MouseScrollWheelAxis = "Mouse ScrollWheel";
+
+    public Camera MainCamera;
 
     private Vector3 DragOrigin;
     private float cameraZoomStep = 2;
     private float minCameraZoom = 5;
 
-    // Start is called before the first frame update
-    void Start()
+    void OnAwake()
     {
-        
+        MainCamera = GetComponent<Camera>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         CheckForZoom();
@@ -27,13 +26,13 @@ public class CameraMove : MonoBehaviour
 
     private void CheckForZoom()
     {
-        var mouseScrollWheelAxisValue = Input.GetAxis("Mouse ScrollWheel");
+        var mouseScrollWheelAxisValue = Input.GetAxis(MouseScrollWheelAxis);
         if (mouseScrollWheelAxisValue != 0)
         {
-            var futureOrthographicCameraSize = Camera.main.orthographicSize + (cameraZoomStep * (mouseScrollWheelAxisValue * - 1));
+            var futureOrthographicCameraSize = MainCamera.orthographicSize + (cameraZoomStep * (mouseScrollWheelAxisValue * - 1));
             if (futureOrthographicCameraSize < minCameraZoom)
                 return;
-            Camera.main.orthographicSize = futureOrthographicCameraSize;
+            MainCamera.orthographicSize = futureOrthographicCameraSize;
         }
 
     }
@@ -41,12 +40,12 @@ public class CameraMove : MonoBehaviour
     private void CheckForMove()
     {
         if(Input.GetMouseButtonDown(1))
-            DragOrigin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            DragOrigin = MainCamera.ScreenToWorldPoint(Input.mousePosition);
 
         if (Input.GetMouseButton(1))
         {
-            var difference = DragOrigin - Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Camera.main.transform.position += difference;
+            var difference = DragOrigin - MainCamera.ScreenToWorldPoint(Input.mousePosition);
+            MainCamera.transform.position += difference;
         }
     }
 }

@@ -28,17 +28,16 @@ public class GameManager : MonoBehaviour
         InstantiateEntranceRoom();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(Input.GetMouseButtonDown(0))
         {
+            if (EventSystem.IsPointerOverGameObject())
+                return;
+
             var mousePosition = Input.mousePosition;
             var worldPosition = MainCamera.ScreenToWorldPoint(Input.mousePosition);
             var hit = Physics2D.RaycastAll(worldPosition, Vector3.forward, 200);
-
-            if (EventSystem.IsPointerOverGameObject())
-                return;
 
             if (hit.Length != 0)
             {
@@ -57,69 +56,109 @@ public class GameManager : MonoBehaviour
             {
                 LastClickable?.ClickedOut();
                 LastClickable = null;
-                Debug.Log("Clicked nowhere");
             }
         }
     }
 
-    public void InstantiateEntranceRoom()
+    /// <summary>
+    /// Creates a new instance of a <see cref="Room"/> that is an Entrance.
+    /// </summary>
+    /// <param name="entranceId"></param>
+    public Room InstantiateEntranceRoom(string entranceId = null)
     {
-        var entranceId = Room.GenerateEntranceId();
+        entranceId ??= Room.GenerateEntranceId();
         var entrancePrefab = MapPrefabs.RoomsPrefabs.First(room => room.GetComponent<Room>().Id == entranceId);
-        Instantiate(entrancePrefab, Vector3.zero, Quaternion.identity, MapContainer.transform);
+        var roomGameObject = Instantiate(entrancePrefab, Vector3.zero, Quaternion.identity, MapContainer.transform);
+        return roomGameObject.GetComponent<Room>();
     }
 
-    public void InstantiateRoom(string roomId)
+    /// <summary>
+    /// Creates a new instance of a <see cref="Room"/>.
+    /// </summary>
+    /// <param name="roomId"></param>
+    public Room InstantiateRoom(string roomId = null)
     {
+        roomId ??= Room.GenerateRoomId();
+
         var roomPrefab = MapPrefabs.RoomsPrefabs.First(room => room.GetComponent<Room>().Id == roomId);
         var clickedDoor = LastClickable.Transform.GetComponent<Door>();
 
         var createdRoom = Instantiate(roomPrefab, Vector3.zero, Quaternion.identity, MapContainer.transform);
-        var createdRoomDoor = createdRoom.GetComponentInChildren<Door>();
         
-        createdRoomDoor.ConnectedDoor = clickedDoor;
-        clickedDoor.ConnectedDoor = createdRoomDoor;
+        PositionRoom(createdRoom, clickedDoor);
+
+        return createdRoom.GetComponent<Room>();
+    }
+
+    /// <summary>
+    /// Positions the newly created <see cref="Room"/>
+    /// </summary>
+    /// <param name="createdRoomGameObject"></param>
+    /// <param name="referenceDoor"></param>
+    private void PositionRoom(GameObject createdRoomGameObject, Door referenceDoor)
+    {
+        var createdRoomDoor = createdRoomGameObject.GetComponentInChildren<Door>();
+
+        createdRoomDoor.ConnectedDoor = referenceDoor;
+        referenceDoor.ConnectedDoor = createdRoomDoor;
+
+        var doorPosition = CalculateDoorPosition(referenceDoor);
+        var doorRotation = CalculateDoorRotation(referenceDoor);
 
         createdRoomDoor.transform.SetParent(MapContainer.transform);
-        createdRoom.transform.SetParent(createdRoomDoor.transform);
+        createdRoomGameObject.transform.SetParent(createdRoomDoor.transform);
 
-        int clickedDoorRotationZAxis = (int)clickedDoor.transform.rotation.eulerAngles.z;
-        int newDoorZRotation = 0;
+        createdRoomDoor.transform.position = doorPosition;
+        createdRoomDoor.transform.rotation = doorRotation;
+
+        createdRoomGameObject.transform.SetParent(MapContainer.transform);
+        createdRoomDoor.transform.SetParent(createdRoomGameObject.transform);
+    }
+
+    /// <summary>
+    /// Calculates the new <see cref="Door"/> rotation based on the referenceDoor rotation.
+    /// </summary>
+    /// <param name="referenceDoor"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    private Quaternion CalculateDoorRotation(Door referenceDoor)
+    {
+        var clickedDoorRotationZAxis = Math.Floor(referenceDoor.transform.rotation.eulerAngles.z);
 
         switch (clickedDoorRotationZAxis)
         {
             case 0:
-                newDoorZRotation = 180;
-                break;
+                return Quaternion.Euler(0, 0, 180);
             case 360:
-                newDoorZRotation = 180;
-                break;
+                return Quaternion.Euler(0, 0, 180);
             case 180:
-                newDoorZRotation = 0;
-                break;
+                return Quaternion.identity;
             case -180:
-                newDoorZRotation = 0;
-                break;
+                return Quaternion.identity;
             case 90:
-                newDoorZRotation = -90;
-                break;
+                return Quaternion.Euler(0, 0, 270);
             case -270:
-                newDoorZRotation = -90;
-                break;
+                return Quaternion.Euler(0, 0, 270);
             case -90:
-                newDoorZRotation = 90;
-                break;
+                return Quaternion.Euler(0, 0, 90);
             case 270:
-                newDoorZRotation = 90;
-                break;
+                return Quaternion.Euler(0, 0, 90);
             default:
                 throw new ArgumentException($"The clicked Door rotation Z axis is {clickedDoorRotationZAxis}.");
         }
-        var newPosition = new Vector3(Mathf.Round(clickedDoor.transform.position.x * 10f) / 10f, Mathf.Round(clickedDoor.transform.position.y * 10f) / 10f, clickedDoor.transform.position.z);
-        createdRoomDoor.transform.position = newPosition;
-        createdRoomDoor.transform.rotation = Quaternion.Euler(0, 0, newDoorZRotation);
-
-        createdRoom.transform.SetParent(MapContainer.transform);
-        createdRoomDoor.transform.SetParent(createdRoom.transform);
     }
+
+    /// <summary>
+    /// Calculates the <see cref="Door"/> world position snapping it to the first decimal.
+    /// </summary>
+    /// <param name="referenceDoor"></param>
+    /// <returns></returns>
+    private Vector3 CalculateDoorPosition(Door referenceDoor) => new Vector3(SnapToFirstDecimal(referenceDoor.transform.position.x), SnapToFirstDecimal(referenceDoor.transform.position.y), referenceDoor.transform.position.z);
+
+    /// <summary>
+    /// Rounds a value to the first decimal.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    private static float SnapToFirstDecimal(float value) => Mathf.Round(value * 10f) / 10f;
 }

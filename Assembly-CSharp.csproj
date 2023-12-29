@@ -60,18 +60,16 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.16f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\UI\RadioButton.cs" />
+    <Compile Include="Assets\Scripts\UIPositionOverMouseOnAwake.cs" />
     <Compile Include="Assets\Scripts\Objects\Room.cs" />
     <Compile Include="Assets\Scripts\CameraMove.cs" />
     <Compile Include="Assets\Scripts\DebugManager.cs" />
     <Compile Include="Assets\Scripts\Objects\Door.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
     <Compile Include="Assets\Scripts\ScriptableObjects\MapPrefabs.cs" />
-    <Compile Include="Assets\Scripts\UI\RadioButtonGroup.cs" />
     <Compile Include="Assets\Scripts\Objects\Abstraction\IPlaceableItem.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Objects\Abstraction\IClickable.cs" />
-    <Compile Include="Assets\Scripts\TilesetColliderMouseDetection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

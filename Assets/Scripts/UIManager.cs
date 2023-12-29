@@ -19,10 +19,9 @@ public class UIManager : MonoBehaviour
         _instance = this;
     }
 
-    public void ShowContextMenu(Vector3 position)
+    public void ShowContextMenu()
     {
         IsUIOpen = true;
-        ContextMenuPanel.transform.position = position;
         ContextMenuPanel.SetActive(true);
     }
 
@@ -64,15 +63,15 @@ public class UIManager : MonoBehaviour
 
     public void CreateRoom()
     {
-        var text = GenerateRoomIdText.text;
-        if (text.Length != 2 || !char.IsDigit(text[0]))
+        var roomId = GenerateRoomIdText.text;
+        if (!Room.IsValidRoomId(roomId))
         {
-            GenerateRoomIdText.text = "";
+            GenerateRoomIdText.text = string.Empty;
             return;
         }
 
-        GameManager.InstantiateRoom(GenerateRoomIdText.text);
+        GameManager.InstantiateRoom(roomId);
         HideUI();
-        GenerateRoomIdText.text = "";
+        GenerateRoomIdText.text = string.Empty;
     }
 }

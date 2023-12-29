@@ -444,8 +444,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe73f0c1ccb7a74c99b4b7be048f414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapContainer: {fileID: 1190432299}
-  scale: 0.5
 --- !u!1 &543872966
 GameObject:
   m_ObjectHideFlags: 0
@@ -1041,6 +1039,7 @@ GameObject:
   - component: {fileID: 982630549}
   - component: {fileID: 982630552}
   - component: {fileID: 982630551}
+  - component: {fileID: 982630553}
   m_Layer: 5
   m_Name: AddNewRoomPanel
   m_TagString: Untagged
@@ -1148,6 +1147,18 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &982630553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982630546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e8d3c8085272a043823a7e96776a0fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1190432299
 GameObject:
   m_ObjectHideFlags: 0
@@ -1512,6 +1523,7 @@ GameObject:
   - component: {fileID: 1503306133}
   - component: {fileID: 1503306137}
   - component: {fileID: 1503306136}
+  - component: {fileID: 1503306138}
   m_Layer: 5
   m_Name: ContextMenuPanel
   m_TagString: Untagged
@@ -1617,6 +1629,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
+--- !u!114 &1503306138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503306131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e8d3c8085272a043823a7e96776a0fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1562791054
 GameObject:
   m_ObjectHideFlags: 0

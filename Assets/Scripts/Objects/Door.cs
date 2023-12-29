@@ -28,7 +28,7 @@ namespace Objects
         public void Clicked(Vector3 worldPosition, Vector3 screenPosition)
         {
             _spriteRenderer.color = _selectedColor;
-            _uiManager.ShowContextMenu(screenPosition);
+            _uiManager.ShowContextMenu();
         }
 
         public void ClickedOut()
