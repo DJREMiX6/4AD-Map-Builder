@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 710054025966743445}
   - component: {fileID: -3694709902103289883}
   - component: {fileID: 1054753850965476723}
-  m_Layer: 0
+  - component: {fileID: -3501230367924339066}
+  m_Layer: 7
   m_Name: Room_33
-  m_TagString: Untagged
+  m_TagString: Room
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -132,10 +133,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0, y: 0}
-      - {x: 0, y: -1}
-      - {x: 3, y: -1}
-      - {x: 3, y: 0}
+    - - {x: 0.125, y: -0.125}
+      - {x: 0.125, y: -0.875}
+      - {x: 2.875, y: -0.875}
+      - {x: 2.875, y: -0.125}
   m_UseDelaunayMesh: 0
 --- !u!114 &1054753850965476723
 MonoBehaviour:
@@ -152,6 +153,36 @@ MonoBehaviour:
   _isRoom: 0
   _isEntrance: 0
   _id: 33
+  Doors: []
+  ParentRoom: {fileID: 0}
+  ChildRooms: []
+--- !u!50 &-3501230367924339066
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6195590584489399218}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1001 &2407121151570133651
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -174,7 +205,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5260854064419025060, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5260854064419025060, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -236,7 +267,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5260854064419025060, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5260854064419025060, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
       propertyPath: m_LocalRotation.w

@@ -6,4 +6,5 @@ using UnityEngine;
 public class MapPrefabs : ScriptableObject
 {
     public GameObject[] RoomsPrefabs;
+    public GameObject[] RoomsInvisiblePrefabs;
 }

@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 6483544271732926567}
   - component: {fileID: -6325330328160697063}
   - component: {fileID: 6959997520166298084}
-  m_Layer: 0
+  - component: {fileID: -5487926550921774788}
+  m_Layer: 7
   m_Name: Room_66
-  m_TagString: Untagged
+  m_TagString: Room
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -133,18 +134,18 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 4, y: 0}
-      - {x: 4, y: -1}
-      - {x: 2, y: -1}
-      - {x: 2, y: -2}
-      - {x: 0, y: -2}
-      - {x: 0, y: -3}
-      - {x: 2, y: -3}
-      - {x: 2, y: -4}
-      - {x: 4, y: -4}
-      - {x: 4, y: -5}
-      - {x: 5, y: -5}
-      - {x: 5, y: 0}
+    - - {x: 4.125, y: -0.125}
+      - {x: 4.125, y: -1.125}
+      - {x: 2.125, y: -1.125}
+      - {x: 2.125, y: -2.125}
+      - {x: 0.125, y: -2.125}
+      - {x: 0.125, y: -2.875}
+      - {x: 2.125, y: -2.875}
+      - {x: 2.125, y: -3.875}
+      - {x: 4.125, y: -3.875}
+      - {x: 4.125, y: -4.875}
+      - {x: 4.875, y: -4.875}
+      - {x: 4.875, y: -0.125}
   m_UseDelaunayMesh: 0
 --- !u!114 &6959997520166298084
 MonoBehaviour:
@@ -161,6 +162,36 @@ MonoBehaviour:
   _isRoom: 1
   _isEntrance: 0
   _id: 66
+  Doors: []
+  ParentRoom: {fileID: 0}
+  ChildRooms: []
+--- !u!50 &-5487926550921774788
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2037804688291895126}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1001 &916053719423461219
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -183,7 +214,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5260854064419025060, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5260854064419025060, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -245,7 +276,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5260854064419025060, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5260854064419025060, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -307,7 +338,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5260854064419025060, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5260854064419025060, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
       propertyPath: m_LocalRotation.w

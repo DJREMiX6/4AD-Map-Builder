@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 451572217643107958, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
+      propertyPath: m_CallbackLayers.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 451572217643107958, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
+      propertyPath: m_ContactCaptureLayers.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 569728465648637604, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -38,7 +46,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5260854064419025060, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5260854064419025060, guid: 2eb7d47e3a2d55547a6c0169e23952d4, type: 3}
       propertyPath: m_LocalRotation.w
