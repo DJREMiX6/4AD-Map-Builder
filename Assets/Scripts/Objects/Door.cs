@@ -17,6 +17,7 @@ namespace Objects
 
         public Transform Transform => transform;
         public GameObject GameObject => gameObject;
+        public int Priority { get; } = 1;
 
         void Awake()
         {

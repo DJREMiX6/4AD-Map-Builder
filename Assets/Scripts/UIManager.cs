@@ -1,6 +1,9 @@
+using System.Linq;
 using Objects;
+using Objects.UI;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
@@ -8,6 +11,8 @@ public class UIManager : MonoBehaviour
     public GameObject AddNewRoomPanel;
     public TMP_InputField GenerateRoomIdText;
     public GameManager GameManager;
+    public EventSystem EventSystem;
+    public UIMessage[] UIMessages;
 
     public bool IsUIOpen { get; private set; }
 
@@ -19,6 +24,26 @@ public class UIManager : MonoBehaviour
         _instance = this;
     }
 
+    public void ShowRoomNotFittingMessage()
+    {
+        IsUIOpen = true;
+        var uiMessageItem = UIMessages.FirstOrDefault(uiMessage => uiMessage.MessageId == UIMessagesId.RoomDoesNotFitMessage);
+        if (uiMessageItem == null)
+        {
+            Debug.LogError($"The UIMessage with Id: {UIMessagesId.RoomDoesNotFitMessage} is null.");
+            IsUIOpen = false;
+            return;
+        }
+        uiMessageItem.gameObject.SetActive(true);
+    }
+
+    public void HideMessages()
+    {
+        foreach(var uiMessage in UIMessages)
+            uiMessage.gameObject.SetActive(false);
+        IsUIOpen = false;
+    }
+
     public void ShowContextMenu()
     {
         IsUIOpen = true;
@@ -27,13 +52,16 @@ public class UIManager : MonoBehaviour
 
     public void HideContextMenu()
     {
-        ContextMenuPanel.SetActive(false);
         IsUIOpen = false;
+        ContextMenuPanel.SetActive(false);
     }
 
     public void ShowAddNewRoomPanel()
     {
-        AddNewRoomPanel.SetActive(true);
+        IsUIOpen = true;
+        AddNewRoomPanel.SetActive(true); 
+        if (EventSystem.currentSelectedGameObject != GenerateRoomIdText.gameObject)
+            EventSystem.SetSelectedGameObject(GenerateRoomIdText.gameObject);
     }
 
     public void HideAddNewRoomPanel()
@@ -46,7 +74,7 @@ public class UIManager : MonoBehaviour
     {
         HideContextMenu();
         HideAddNewRoomPanel();
-        IsUIOpen = false;
+        HideMessages();
     }
 
     public void OnAddRoomClicked()
@@ -67,10 +95,12 @@ public class UIManager : MonoBehaviour
         if (!Room.IsValidRoomId(roomId))
         {
             GenerateRoomIdText.text = string.Empty;
+            if(EventSystem.currentSelectedGameObject != GenerateRoomIdText.gameObject)
+                EventSystem.SetSelectedGameObject(GenerateRoomIdText.gameObject);
             return;
         }
 
-        GameManager.InstantiateRoom(roomId);
+        StartCoroutine(GameManager.InstantiateRoom(roomId));
         HideUI();
         GenerateRoomIdText.text = string.Empty;
     }

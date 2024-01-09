@@ -1,17 +1,16 @@
 using System;
-using Assets.Scripts.Objects.Abstraction;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using Objects;
 using Objects.Abstraction;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
-using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
-
     public static GameManager Instance => _instance;
     [CanBeNull] private static GameManager _instance;
 
@@ -21,6 +20,8 @@ public class GameManager : MonoBehaviour
     public EventSystem EventSystem;
     public UIManager UIManager;
     public IClickable LastClickable;
+
+    private bool _isCreatedRoomColliding = false;
 
     void Start()
     {
@@ -35,20 +36,26 @@ public class GameManager : MonoBehaviour
             if (EventSystem.IsPointerOverGameObject())
                 return;
 
+            if (UIManager.IsUIOpen)
+                UIManager.HideUI();
+
             var mousePosition = Input.mousePosition;
             var worldPosition = MainCamera.ScreenToWorldPoint(Input.mousePosition);
             var hit = Physics2D.RaycastAll(worldPosition, Vector3.forward, 200);
 
             if (hit.Length != 0)
             {
-                if(UIManager.IsUIOpen)
-                    UIManager.HideUI();
 
-                var clickable = hit[^1].collider.gameObject.GetComponent<IClickable>();
-                if (LastClickable != clickable)
+                var clickablesRaycastHit2D = hit.Where(raycastHit => raycastHit.collider.GetComponent<IClickable>() != null);
+                var clickables = new List<IClickable>();
+                foreach(var clickable in clickablesRaycastHit2D)
+                    clickables.Add(clickable.collider.GetComponent<IClickable>());
+                var highestPriorityClickable = clickables.OrderByDescending(clickable => clickable.Priority).First();
+
+                if (LastClickable != highestPriorityClickable)
                 {
                     LastClickable?.ClickedOut();
-                    LastClickable = clickable;
+                    LastClickable = highestPriorityClickable;
                 }
                 LastClickable?.Clicked(worldPosition, mousePosition);
             }
@@ -76,18 +83,42 @@ public class GameManager : MonoBehaviour
     /// Creates a new instance of a <see cref="Room"/>.
     /// </summary>
     /// <param name="roomId"></param>
-    public Room InstantiateRoom(string roomId = null)
+    public IEnumerator InstantiateRoom(string roomId = null)
     {
         roomId ??= Room.GenerateRoomId();
 
-        var roomPrefab = MapPrefabs.RoomsPrefabs.First(room => room.GetComponent<Room>().Id == roomId);
+        var temporaryRoomPrefab = MapPrefabs.RoomsInvisiblePrefabs.First(room => room.GetComponent<Room>().Id == roomId);
+        var temporaryRoom = Instantiate(temporaryRoomPrefab, Vector3.zero, Quaternion.identity, MapContainer.transform);
         var clickedDoor = LastClickable.Transform.GetComponent<Door>();
 
-        var createdRoom = Instantiate(roomPrefab, Vector3.zero, Quaternion.identity, MapContainer.transform);
-        
-        PositionRoom(createdRoom, clickedDoor);
 
-        return createdRoom.GetComponent<Room>();
+        PositionRoom(temporaryRoom, clickedDoor);
+
+        yield return StartCoroutine(CheckRoomCollisions(temporaryRoom));
+
+        if (!_isCreatedRoomColliding)
+        {
+            var roomPrefab = MapPrefabs.RoomsPrefabs.First(room => room.GetComponent<Room>().Id == roomId);
+            var createdRoom = Instantiate(roomPrefab, temporaryRoom.transform.position, temporaryRoom.transform.rotation, MapContainer.transform);
+
+            var room = createdRoom.GetComponent<Room>();
+            room.ParentRoom = LastClickable.GameObject.GetComponentInParent<Room>();
+        }
+        else
+            UIManager.ShowRoomNotFittingMessage();
+
+        Destroy(temporaryRoom);
+    }
+
+    /// <summary>
+    /// This method waits for a FixedUpdate to complete and update the Collider information and then check for collisions.
+    /// </summary>
+    /// <param name="room"></param>
+    /// <returns></returns>
+    private IEnumerator CheckRoomCollisions(GameObject room)
+    {
+        yield return new WaitForFixedUpdate();
+        _isCreatedRoomColliding = IsRoomCollidingWithAnotherRoom(room);
     }
 
     /// <summary>
@@ -153,7 +184,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <param name="referenceDoor"></param>
     /// <returns></returns>
-    private Vector3 CalculateDoorPosition(Door referenceDoor) => new Vector3(SnapToFirstDecimal(referenceDoor.transform.position.x), SnapToFirstDecimal(referenceDoor.transform.position.y), referenceDoor.transform.position.z);
+    private Vector3 CalculateDoorPosition(Door referenceDoor) => new(SnapToFirstDecimal(referenceDoor.transform.position.x), SnapToFirstDecimal(referenceDoor.transform.position.y), 0);
 
     /// <summary>
     /// Rounds a value to the first decimal.
@@ -161,4 +192,29 @@ public class GameManager : MonoBehaviour
     /// <param name="value"></param>
     /// <returns></returns>
     private static float SnapToFirstDecimal(float value) => Mathf.Round(value * 10f) / 10f;
+
+    /// <summary>
+    /// Checks weather the passed Room is colliding with another Room
+    /// </summary>
+    /// <param name="room"></param>
+    /// <returns></returns>
+    private static bool IsRoomCollidingWithAnotherRoom(GameObject room)
+    {
+        //Checks if the given GameObject is a Room
+        var roomComponent = room.GetComponent<Room>();
+        if (roomComponent == null)
+            throw new Exception("The passed GameObject is not a Room.");
+
+        var roomCollider = room.GetComponent<Collider2D>();
+        var bounds = roomCollider.bounds;
+
+        /* When calling the Physics2D.OverlapAreaAll() method, if I pass the LayerMask to filter only the Room GameObjects (LayerMask == 7) then the method will return an empty array,
+         * if instead I do not pass the LayerMask then it finds all the overlapping colliders
+         * then I filter them manually and call the IsTouching() method to only the colliders that are attached to a GameObject with LayerMask == "Room" */
+        var overlapColliders = Physics2D.OverlapAreaAll(bounds.min, bounds.max);
+        var roomLayerMask = LayerMask.NameToLayer("Room");
+
+        var isOverlapping = overlapColliders.Any(collider =>collider.gameObject.layer == roomLayerMask && roomCollider.IsTouching(collider));
+        return isOverlapping;
+    }
 }

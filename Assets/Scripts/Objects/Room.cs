@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Assets.Scripts.Objects.Abstraction;
 using Objects.Abstraction;
 using UnityEngine;
+using UnityEngine.Android;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
@@ -19,6 +20,7 @@ namespace Objects
 
         public bool IsRoom => _isRoom;
         public bool IsEntrance => _isEntrance;
+        public bool IsTouchingOtherRoom { get; private set; } = false;
         public string Id => _id;
 
         public Door[] Doors;
@@ -27,6 +29,8 @@ namespace Objects
 
         public Transform Transform => transform;
         public GameObject GameObject => gameObject;
+
+        public int Priority { get; } = 0;
 
         private void Awake()
         {
@@ -49,6 +53,7 @@ namespace Objects
 
         public static string GenerateRoomId() => string.Concat(GenerateIdPart(), GenerateIdPart());
 
+        //TODO add check for invalid numbers like 17 or 1
         public static bool IsValidRoomId(string roomId) => roomId.Length == 2 && char.IsDigit(roomId[0]);
     }
 }
