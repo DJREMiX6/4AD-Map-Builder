@@ -45,12 +45,11 @@ public class GameManager : MonoBehaviour
 
             if (hit.Length != 0)
             {
-
-                var clickablesRaycastHit2D = hit.Where(raycastHit => raycastHit.collider.GetComponent<IClickable>() != null);
-                var clickables = new List<IClickable>();
-                foreach(var clickable in clickablesRaycastHit2D)
-                    clickables.Add(clickable.collider.GetComponent<IClickable>());
-                var highestPriorityClickable = clickables.OrderByDescending(clickable => clickable.Priority).First();
+                var highestPriorityClickable = hit
+                    .Where(raycastHit => raycastHit.collider.GetComponent<IClickable>() != null)
+                    .Select(clickable => clickable.collider.GetComponent<IClickable>())
+                    .OrderByDescending(clickable => clickable.Priority)
+                    .First();
 
                 if (LastClickable != highestPriorityClickable)
                 {

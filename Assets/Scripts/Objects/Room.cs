@@ -11,31 +11,48 @@ namespace Objects
 {
     public class Room : MonoBehaviour, IPlaceableItem, IClickable
     {
+
+        #region CONSTS
+
         private const int MIN_ID_VALUE = 1;
         private const int MAX_ID_VALUE = 7;
 
-        [SerializeField] private bool _isRoom;
-        [SerializeField] private bool _isEntrance;
+        #endregion CONSTS
+
+        #region PRIVATE FIELDS
+
+        [SerializeField] private RoomType _roomType;
         [SerializeField] private string _id;
+        private Door[] _doors;
 
-        public bool IsRoom => _isRoom;
-        public bool IsEntrance => _isEntrance;
-        public bool IsTouchingOtherRoom { get; private set; } = false;
+        #endregion PRIVATE FIELDS
+
+        #region PUBLIC PROPS
+
+        public RoomType RoomType => _roomType;
         public string Id => _id;
+        public Door[] Doors => _doors;
 
-        public Door[] Doors;
-        public Room ParentRoom;
+        public Room ParentRoom { get; set; }
+        public List<Room> ChildRooms { get; set; } = new(); //TODO add childRooms
         public List<Room> ChildRooms = new();
+        #endregion PUBLIC PROPS
+
+        #region IClickable PROPS IMPLEMENTATION
 
         public Transform Transform => transform;
         public GameObject GameObject => gameObject;
+
+        #endregion IClickable PROPS IMPLEMENTATION
 
         public int Priority { get; } = 0;
 
         private void Awake()
         {
-            Doors = GetComponentsInChildren<Door>();
+            _doors = GetComponentsInChildren<Door>();
         }
+
+        #region IClickable METHODS IMPLEMENTATION
 
         public void Clicked(Vector3 position, Vector3 screenPosition)
         {
@@ -46,6 +63,8 @@ namespace Objects
         {
             //TODO
         }
+
+        #endregion IClickable METHODS IMPLEMENTATION
 
         private static int GenerateIdPart() => Random.Range(MIN_ID_VALUE, MAX_ID_VALUE);
 
